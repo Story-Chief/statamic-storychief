@@ -3,6 +3,7 @@
 namespace StoryChief\StoryChief\FieldHandlers;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Statamic\Entries\Entry;
 use Statamic\Facades\Asset;
@@ -64,10 +65,8 @@ class AssetFieldHandler extends BaseFieldHandler
      */
     protected function createTempFile(): string
     {
-        Storage::disk('local')->put(
-          $this->file_name,
-          file_get_contents($this->payload_value)
-        );
+        Http::sink(storage_path("/app/$this->file_name"))
+          ->get($this->payload_value);
 
         return realpath(storage_path("/app/$this->file_name"));
     }
